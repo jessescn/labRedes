@@ -20,7 +20,7 @@ def create_mimetype(path):
     elif ext == 'mp4':
         mimetype += 'video/mp4'
 
-    mimetype += '\n\n'
+    mimetype += '\r\n'
     return mimetype
 
 def run_server(server_port):
@@ -36,6 +36,7 @@ def run_server(server_port):
         connection, addr = server_socket.accept()
         message = connection.recv(1024).decode('utf-8')
         message_parts = message.split(' ')
+
         print('user {} was connected.'.format(addr))
 
         try:
@@ -47,26 +48,36 @@ def run_server(server_port):
                 file_path += 'index.html'
             
             print('method {} returns {}'.format(method, file_path))
+
+            file_name = file_path.split('/')[-1]
             file = open( '.' + file_path, 'rb')
             response  = file.read()
             file.close()
+
             header = '{} 200 OK\r\n'.format(http_version)
 
             mimetype = create_mimetype(file_path)
             header += mimetype
+
+            if file_name != 'index.html':
+                header +='Content-Disposition: form-data; name="files"; filename="{}"\r\n'.format(file_name)
         
         except:
             header = '{} 404 Not Found\n\n'.format(http_version)
             response = '<html><body><center><h3>Error 404: File not found</h3</center></body></html>'.encode('utf-8')
             
         final_response = header.encode('utf-8')
+        final_response += '\r\n'.encode('utf-8')
         final_response += response
+        final_response += '\r\n'.encode('utf-8')
+
         connection.send(final_response)
         connection.close()
 
 if __name__ == '__main__':
     port = 3000
-    if len(sys.argv) > 1:
-        port = int(sys.argv[1])
 
-    run_server(port)
+    if len(sys.argv) > 1:
+        port = sys.argv[1]
+
+    run_server(int(port))
