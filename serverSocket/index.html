@@ -5,10 +5,30 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>HTTP Server</title>
+    <style>
+        html, body{
+            height: 100vh;
+            margin:  0;
+            padding: 0;
+        }
+        .server-status{
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #rocket{
+            font-size: 50px;
+        }
+
+    </style>
 </head>
 <body>
-    <center>
-        <h2>Server is up and running!</h2>
-    </center>
+    <div class="server-status">
+        <h1>Server is up and running! </h1>
+        <div id="rocket">🚀</div>
+    </div>
 </body>
 </html>

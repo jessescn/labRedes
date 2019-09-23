@@ -47,7 +47,6 @@ def run_server(server_port):
             if file_path == '/':
                 file_path += 'index.html'
             
-            print('method {} returns {}'.format(method, file_path))
 
             file_name = file_path.split('/')[-1]
             file = open( '.' + file_path, 'rb')
@@ -58,10 +57,13 @@ def run_server(server_port):
 
             mimetype = create_mimetype(file_path)
             header += mimetype
+
+            print('method {} returns {}'.format(method, file_path))
         
         except:
             header = '{} 404 Not Found\n\n'.format(http_version)
-            response = '<html><body><center><h3>Error 404: File not found</h3</center></body></html>'.encode('utf-8')
+            response = '<html><body><center><h1>Error 404</h1><h3> File "{}" not found</h3></center></body></html>'.format(file_name).encode('utf-8')
+            print('method {} file "{}" not found.'.format(method, file_name))
             
         final_response = header.encode('utf-8')
         final_response += '\r\n'.encode('utf-8')
