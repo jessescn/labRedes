@@ -27,7 +27,7 @@ def run_server(server_port):
 
     server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    server_socket.bind(('127.0.0.1', server_port))
+    server_socket.bind(('', server_port))
     server_socket.listen(1)
 
     print('Server is listening on port {}'.format(server_port))
@@ -58,9 +58,6 @@ def run_server(server_port):
 
             mimetype = create_mimetype(file_path)
             header += mimetype
-
-            if file_name != 'index.html':
-                header +='Content-Disposition: form-data; name="files"; filename="{}"\r\n'.format(file_name)
         
         except:
             header = '{} 404 Not Found\n\n'.format(http_version)
