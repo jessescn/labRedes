@@ -13,12 +13,6 @@ def create_mimetype(path):
         mimetype += 'image/png'
     elif ext == 'html':
         mimetype += 'text/html'
-    elif ext == 'mp3':
-        mimetype += 'audio/mpeg'
-    elif ext == 'ogg':
-        mimetype += 'audio/ogg'
-    elif ext == 'mp4':
-        mimetype += 'video/mp4'
     else:
         return None
 
@@ -34,7 +28,7 @@ def run_server(server_port):
 
     print('Server is listening on port {}'.format(server_port))
 
-    while(True):
+    while True:
         connection, addr = server_socket.accept()
         message = connection.recv(1024).decode('utf-8')
         message_parts = message.split(' ')
@@ -44,32 +38,36 @@ def run_server(server_port):
         try:
             method = message_parts[0]
             file_path = message_parts[1]
-            http_version = message_parts[2].split('\r\n')[0] 
+            http_version = message_parts[2].split('\r\n')[0]
 
             if file_path == '/':
                 file_path += 'index.html'
-            
+
 
             file_name = file_path.split('/')[-1]
-            file = open( '.' + file_path, 'rb')
-            response  = file.read()
+            file = open('.' + file_path, 'rb')
+            response = file.read()
             file.close()
 
             header = '{} 200 OK\r\n'.format(http_version)
 
             mimetype = create_mimetype(file_path)
+
             if mimetype:
                 header += mimetype
-            else:
-                header += 'Content-Disposition: form-data; name="files"; filename="{}"\r\n'.format(file_name)
+            # else:
+                # header += 'Content-Disposition: form-data; name="files";\
+                #                      filename="{}"\r\n'.format(file_name)
 
             print('method {} returns {}'.format(method, file_path))
-        
+
         except:
             header = '{} 404 Not Found\n\n'.format(http_version)
-            response = '<html><body><center><h1>Error 404</h1><h3> File "{}" not found</h3></center></body></html>'.format(file_name).encode('utf-8')
+            response = '<html><body><center><h1>Error 404</h1><h3> File "{}" not found\
+                                    </h3></center></body></html>'.format(file_name).encode('utf-8')
+
             print('method {} file "{}" not found.'.format(method, file_name))
-            
+
         final_response = header.encode('utf-8')
         final_response += '\r\n'.encode('utf-8')
         final_response += response
