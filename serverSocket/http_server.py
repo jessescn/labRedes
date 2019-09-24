@@ -19,6 +19,8 @@ def create_mimetype(path):
         mimetype += 'audio/ogg'
     elif ext == 'mp4':
         mimetype += 'video/mp4'
+    else:
+        return None
 
     mimetype += '\r\n'
     return mimetype
@@ -56,7 +58,10 @@ def run_server(server_port):
             header = '{} 200 OK\r\n'.format(http_version)
 
             mimetype = create_mimetype(file_path)
-            header += mimetype
+            if mimetype:
+                header += mimetype
+            else:
+                header += 'Content-Disposition: form-data; name="files"; filename="{}"\r\n'.format(file_name)
 
             print('method {} returns {}'.format(method, file_path))
         
