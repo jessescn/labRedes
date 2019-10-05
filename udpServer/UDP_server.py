@@ -31,12 +31,16 @@ def run_server(IP, PORT):
 
         elements = sentence.decode('utf-8').split()
 
-        response = calculator(elements[0], int(elements[1]), int(elements[2]))
-       
-        if (response == None):
-            response = "RESULTADO INVÁLIDO"
+        try:
+
+            response = calculator(elements[0], int(elements[1]), int(elements[2]))
         
-        print('Operação {} com resultado sendo {}'.format(elements, response))
+            if (response == None):
+                response = "INVALID RESULT"
+            
+            print('Operation {} resulting in {}'.format(elements, response))
+        except:
+            response = '400 bad request'
 
         serverSocket.sendto(str(response).encode('utf-8'), client)
 
