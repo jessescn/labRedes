@@ -5,7 +5,7 @@ import time
 
 stop_event = Event()
 
-def recv_response(socket, sentence):
+def recv_ack(socket, sentence):
     print('waiting response...')
     message = socket.recvfrom(1024) 
     sentence.put(message)
@@ -13,29 +13,34 @@ def recv_response(socket, sentence):
 
 def run_client(server_ip, server_port):
 
-    clientSocket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     dest = ( server_ip, server_port)
 
 
     sentence = input('Write some operation: ')
 
-    modified_sentence = Queue()
+    confirmations = Queue()
 
     while True:
-        clientSocket.sendto(sentence.encode('utf-8'), dest)
+        client_socket.sendto(sentence.encode('utf-8'), dest)
 
         print('sending request: {}'.format(sentence))
 
-        action_thread = Thread(target=recv_response, args=(clientSocket, modified_sentence))
+        action_thread = Thread(target=recv_ack, args=(client_socket, confirmations))
         action_thread.start()
         action_thread.join(timeout=0.1)
 
         stop_event.set()
 
-        if modified_sentence.qsize() > 0:
+        if confirmations.qsize() > 0 and confirmations.get()[0].decode('utf-8') == 'ACK':
             break 
 
-    print("Resut:", modified_sentence.get()[0].decode('utf-8'))
+    response = client_socket.recvfrom(1024)
+
+    print("Resut:", response[0].decode('utf-8'))
+
+    # confirmation = 'ACK'
+    # client_socket.sendto(confirmation.encode('utf-8'), dest)
 
 
 if __name__ == '__main__':
