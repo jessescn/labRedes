@@ -1,7 +1,6 @@
 import socket
-from queue import Queue
-from threading import Event, Thread
-
+import time
+from threading import Thread, enumerate
 
 class TheadServer(object):
 
@@ -22,6 +21,14 @@ class TheadServer(object):
         
     def handle_connection(self, sentence, client):
 
+        # Para testar se o reenvio do ack está funcionando
+        # time.sleep(2)
+
+        self.socket.sendto('ACK'.encode('utf-8'), client)
+
+        # Para testar se o reenvio geral esta funcionando
+        # time.sleep(4)
+
         print('received a request from {} port {}'.format(client[0], client[1]))
         elements = sentence.decode('utf-8').split()
 
@@ -36,7 +43,6 @@ class TheadServer(object):
             response = '400 bad request'
         
         self.socket.sendto(str(response).encode('utf-8'), client)
-
 
 def calculator(operation, value1, value2):
     result = None
