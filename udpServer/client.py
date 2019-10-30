@@ -22,6 +22,7 @@ class ThreadClient(object):
             connection_thread = Thread(target=self.handle_connection, args=(responses, ))
             connection_thread.start()
             connection_thread.join(timeout=2)
+            connection_thread._stop()
 
             if responses.qsize() > 0:
                 break
