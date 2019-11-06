@@ -38,7 +38,7 @@ class ThreadClient(object):
         # se we assume as lost and resend the request
         while True:
             if self.verbose:
-                print('LOG: Sending request to server!')
+                print('\nLOG: Sending request to server!')
 
             self.socket.sendto(self.user_operation.encode('utf-8'), self.dest)
 
@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
     verbose = False
 
-    if len(sys.argv) > 1 and sys.argv[1] == "--verbose":
+    if "--verbose" in sys.argv:
         verbose = True
 
     SERVER_IP = "localhost"
