@@ -46,6 +46,7 @@ class TheadServer(object):
 
 def calculator(operation, value1, value2):
     result = None
+    operation = operation.upper() 
 
     if operation == 'ADD':
         result = value1 + value2
